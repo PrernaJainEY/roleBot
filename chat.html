@@ -7,18 +7,23 @@
   <link href="./css/styles.css" rel="stylesheet">
   <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
   <script src="./js/chat.js">
-
+ 
   </script>
-
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+ ></script>
 </head>
 
 <body>
   <div class="navBar">
-    <img src="./image/SSS.png" class="logo" height="50px">
-    <text class="header">Kora AI Interview Agent</text>
+    <div class="header">
+    <img src="./image/SSS.png" class="logo" >
+    <p class="namePurple">Kora.ai</p>
+    <sub class="nameWhite">Your Ai-Powered Growth Amplifier</sub>
+  </div>
     <div class="buttonGroup">
       <!-- <button id="startSession" onclick="window.startSession()">Open Avatar Session</button> -->
       <button id="stopSession" onclick="window.stopSession()" disabled>End Interview</button>
+      <button id="downloadPdfButton">Download Chat</button>
     </div>
   </div>
   <div class="form-container" id="form-container">
@@ -97,7 +102,7 @@
     <input id="sttLocales" type="text" size="64" style="font-size: medium;" value="en-IN"></input><br />
     <label style="font-size: medium;" for="ttsVoice">TTS Voice:</label>
     <input id="ttsVoice" type="text" size="32" style="font-size: medium;"
-      value="en-US-AvaMultilingualNeural"></input><br />
+      value="en-IN-RehaanNeural"></input><br />
     <label style="font-size: medium;" for="customVoiceEndpointId">Custom Voice Deployment ID (Endpoint ID):</label>
     <input id="customVoiceEndpointId" type="text" size="32" style="font-size: medium;" value=""></input><br />
     <label style="font-size: medium;" for="personalVoiceSpeakerProfileID">Personal Voice Speaker Profile ID:</label>
@@ -122,15 +127,13 @@
     </div>
     <br />
   </div>
-  <div hidden="hidden">
-    <button id="stopSpeaking" onclick="stopSpeaking()" disabled>Stop Speaking</button>
-  </div>
+ 
   <!--
   <button id="microphone" onclick="window.microphone()" disabled>Start Microphone</button>
  
   <button id="stopSpeaking" onclick="stopSpeaking()" disabled>Stop Speaking</button>
   <button id="clearChatHistory" onclick="window.clearChatHistory()">Clear Chat History</button> -->
-  <div class="chatBotContainer" id="chatBotContainer">
+  <!-- <div class="chatBotContainer" id="chatBotContainer">
     <div id="videoContainer" style="width: 700px;">
       <div id="overlayArea">
 
@@ -151,12 +154,12 @@
       </div>
       <div
         style=" background: white; border-radius: 8px; justify-content: flex-start; align-items: center; gap: 8px; display: flex">
-        <!-- <textarea id="userMessageBox" placeholder="Message..." style="width: 100%; height: 20px; flex: 1 1 0; color:
+        <textarea id="userMessageBox" placeholder="Message..." style="width: 100%; height: 20px; flex: 1 1 0; color:
           #828282; font-size: 14px; font-family: Inter; 
           font-weight: 400; line-height: 19.60px; word-wrap: break-word;
           border: none;
         ">
-        </textarea> -->
+        </textarea>
 
       </div>
 
@@ -167,7 +170,54 @@
       </div>
 
 
-      <!-- <textarea id="chatHistory" style=">
+      <textarea id="chatHistory" style="
+  width: 300px;
+  height: 500px;
+  font-size: medium;
+  border: none;
+  resize: none;
+  background-color: transparent;
+  overflow: hidden;" hidden></textarea>
+    </div>
+
+
+    </div>
+  </div> -->
+
+  <div class="chatBotContainer" id="chatBotContainer">
+    <div id="videoContainer" style="width: 0.1px;">
+      <div id="overlayArea">
+
+      </div>
+      <div id="localVideo" >
+       
+      </div>
+      <div id="remoteVideo">
+        <div id="continuousConversationDiv" style="background-color: white; width: 300px;"  hidden>
+          <input type="checkbox" id="continuousConversation">Continuous Conversation</input><br />
+        </div>
+
+      </div>
+    </div>
+    <div class="chatContainer " >
+      <div id="chatHistory">
+      </div>
+      <div
+        style="padding-left: 8px; padding-right: 8px; background: white; border-radius: 8px; border: 1px #E0E0E0 solid; justify-content: flex-start; align-items: center; gap: 8px; display: inline-flex">
+        <textarea id="userMessageBox" placeholder="Message..." style="width: 100%; height: 20px; flex: 1 1 0; color:
+          #828282; font-size: 14px; font-family: Inter; 
+          font-weight: 400; line-height: 19.60px; word-wrap: break-word;
+          border: none;
+        ">
+        </textarea>
+        <div class="microphoneButton"><img id="microphone" src="./image/Frame 2610372.svg" width="20px"
+            onclick="window.microphone()" /></div>
+            <div>
+              <button id="stopSpeaking" onclick="stopSpeaking()" disabled>Stop Speaking</button>
+            </div>
+      </div>
+    </div>
+    <!-- <textarea id="chatHistory" style="
   width: 300px;
   height: 500px;
   font-size: medium;
@@ -178,12 +228,11 @@
     </div> -->
 
 
-    </div>
   </div>
   <div id="continuousConversationDiv" style="background-color: white; width: 300px;" hidden>
     <input type="checkbox" id="continuousConversation">Continuous Conversation</input><br />
   </div>
-  <div id="showTypeMessageCheckbox">
+  <div id="showTypeMessageCheckbox" hidden="hidden">
     <input type="checkbox" id="showTypeMessage" onchange="window.updateTypeMessageBox()" disabled>Type
     Message</input><br />
   </div>

@@ -5,44 +5,72 @@
  *  that can be found in the LICENSE file in the root of the source
  *  tree.
  */
-.hidden {
+ .hidden {
   display: none;
 }
 body {
-    background-color: #f4f4f9;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
+  background-color: black;
+  display: flex;
+ 
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
 }
 .navBar {
   display: flex;
+  background-color: black;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content:space-between;
   align-items: center;
   width: 100%;
-  padding: 5px;
+  
   border-bottom: #676161 1px solid;
 }
-
+/* .user::before {
+  content: "Interviwee";
+  display: block;
+  max-width: 200px;
+  align-self: flex-start;
+  font-size: 14px;
+  color: blue;
+  margin: 1px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.assistant::before {
+  content: "Kora Agent";
+  display: block;
+  max-width: 200px;
+  align-self: flex-start;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 14px;
+  color: blue;
+  margin: 1px;
+} */
 .chatBotContainer {
+  display: none;
   width: 100%;
-  display: flex;
+  background-color: black;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: 2px;
+  gap: 10px;
   width: 100%;
-  margin: 10px;
+
+  
+}
+.introduction{
+  max-width:100%;
+color:#666692;
+padding:10px;
+margin-top:5%;
+font-family: Verdana, Geneva, Tahoma, sans-serif;
+justify-self:center;
+align-self: center;
+font-size:larger;
+
 }
 
 #videoContainer {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin: 30px;
 
   /* Optional: Adjust margin as needed */
 }
@@ -51,7 +79,9 @@ body {
   /* Take remaining space */
   height: 30px;
 }
-
+.hidden {
+  display: none;
+}
 .highlight {
   background-color: #eee;
   font-size: 1.2em;
@@ -65,9 +95,10 @@ body {
 }
 
 @media screen and (min-width: 1000px) {
+
   /* hack! to detect non-touch devices */
   div#links a {
-    line-height: 0.8em;
+      line-height: 0.8em;
   }
 }
 
@@ -77,30 +108,40 @@ audio {
 
 .header {
   display: flex;
-padding:10px 0px;
-  flex-direction: column;
-  flex-shrink: 0;
-  color: #54514f;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 30px;
-  justify-self: center;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 100%;
-}
 
+  flex-direction: row;
+  justify-content: center;
+ align-items: center;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  
+
+}
+.namePurple {
+  content: "Kora.ai";
+  color:#BFA2DA;
+ 
+  font-size: 16px;
+  
+  font-weight:600;
+
+}
+.nameWhite {
+  content: "Your Ai-Powered Growth Amplifier ";
+  color:white;
+ margin-left:4px;
+  font-size: 12px;
+}
 body {
-  /* background: #e7eaff; */
-  background: #ffffff;
+  background:black;
 }
 
 .logo {
-  background: url(<path-to-image>) #fff 50% / cover no-repeat;
- 
+  
+height:30px;
 }
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   margin: 0;
   padding: 1em;
@@ -108,10 +149,10 @@ body {
 }
 
 button {
-  background-color: #54514f;
+  background-color:#69397e;
   color: white;
   border-radius: 8px;
-  border: 0px;
+  border:0px;
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
   display: flex;
   padding: 10px 10px;
@@ -121,20 +162,21 @@ button {
   align-items: center;
   gap: 4px;
 }
-#localVideo {
+#localVideo
+{
   width: 500px;
-
-  background-image: url("../image/interview_agnt.png"); /* Replace with your image path */
+ 
+  background-image: url('../image/interview_agnt.png'); /* Replace with your image path */
   /* Adjust background properties */
   /* background-size: cover; /* Cover the entire body */
-  /* background-position: center; */
+  /* background-position: center; */ 
 }
 button:active {
   background-color: #babaa6;
 }
 
 button:hover {
-  background-color: rgba(246, 250, 59, 0.72);
+  background-color:rgba(246, 250, 59, 0.72); 
   color: rgb(23, 22, 22);
   transform: scale(1.1);
 }
@@ -144,8 +186,9 @@ button[disabled] {
 }
 
 button[disabled]:hover {
-  background-color: rgba(246, 250, 59, 0.72);
+  background-color:rgba(246, 250, 59, 0.72); 
   color: rgb(23, 22, 22);
+ 
 }
 
 canvas {
@@ -155,7 +198,7 @@ canvas {
 }
 
 code {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 400;
 }
 
@@ -171,7 +214,7 @@ div#links {
 
 h1 {
   border-bottom: 1px solid #ccc;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 500;
   margin: 0 0 0.8em 0;
   padding: 0 0 0.2em 0;
@@ -196,11 +239,12 @@ li {
 
 html {
   /* avoid annoying page width change
-    when moving from the home page */
+  when moving from the home page */
   overflow-y: scroll;
 }
 
-input[type="radio"] {
+
+input[type=radio] {
   position: relative;
   top: -1px;
 }
@@ -257,7 +301,7 @@ h1 span {
 }
 
 a {
-  color: #1d6eee;
+  color: #1D6EEE;
   font-weight: 300;
   text-decoration: none;
 }
@@ -281,11 +325,11 @@ a#viewSource {
 }
 
 div#errorMsg p {
-  color: #f00;
+  color: #F00;
 }
 
 .microphoneButton:hover {
-  transform: scale(1.2);
+  transform: scale(1.3); 
 }
 
 div#links a {
@@ -299,18 +343,8 @@ div.outputSelector {
 }
 
 .microphoneButton {
-background-color: rgb(255, 255, 255);
-display: flex;
-  justify-self: center;
-  border-radius: 50px;
-  align-items: center;
-  gap: 8px;
-  padding: 4px;
-  justify-content: center;
-  margin:10px;
-  box-shadow: 0px 0px 14px 6px blue;
-  width: 50px;
-  
+  align-self: center;
+  margin: 10px;
 }
 
 p.description {
@@ -322,7 +356,7 @@ strong {
 }
 
 textarea {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 video {
@@ -339,38 +373,39 @@ ul {
 
 @media screen and (max-width: 650px) {
   .highlight {
-    font-size: 1em;
-    margin: 0 0 20px 0;
-    padding: 0.2em 1em;
+      font-size: 1em;
+      margin: 0 0 20px 0;
+      padding: 0.2em 1em;
   }
 
   h1 {
-    font-size: 24px;
+      font-size: 24px;
   }
 }
 
 @media screen and (max-width: 550px) {
   button:active {
-    background-color: darkRed;
+      background-color: darkRed;
   }
 
   h1 {
-    font-size: 22px;
+      font-size: 22px;
   }
 }
 
 @media screen and (max-width: 450px) {
   h1 {
-    font-size: 20px;
+      font-size: 20px;
   }
 }
 
+
 /* textarea {
-    width: 800px;
-    min-height: 60px;
-    margin-bottom: 10px;
+  width: 800px;
+  min-height: 60px;
+  margin-bottom: 10px;
 } */
-#userMessageBox:focus {
+#userMessageBox:focus{
   outline: none; /* Remove default focus outline */
   border: none; /* Remove any border */
 }
@@ -379,25 +414,29 @@ ul {
   display: flex;
   align-self: stretch;
   flex-direction: column;
-  height: 200px;
+  height: 450px;
   gap: 8px;
   border-radius: 8px;
-  font-size: 14px !important;
-  font-weight: 500;
+  font-size: medium;
   border: none;
   resize: none;
-  margin-top: 5%;
+  background:url(../image/KoraWhiteLogo.png);
+  
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: hsl(235.38deg 29.39% 92.94%);
   overflow-y: scroll;
 }
 
 .chatContainer {
-  width: 60%;
+  width: 100%;
   flex-direction: column;
-  display: flex;
-  align-items: center;
+ display:flex;
   border-radius: 8px;
   padding: 10px 10px;
-  margin: 4px;
+  margin: 2px;
+  
+
 }
 
 #webrtc textarea {
@@ -411,60 +450,32 @@ ul {
 }
 
 .user {
-  display: block;
-  max-width: 500px;
+  display: flex;
+  max-width: 40%;
+  align-self: flex-end;
+  padding: 12px 16px;
+  font-size: smaller;
+  gap: 8px;
+  border-radius: 24px 16px 16px 4px;
+  
+  background: linear-gradient(to bottom, #e0dce6, #3d3f50);
+  color:white;
+  margin: 4px;
+}
 
-  align-self: flex-start;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 16px;
-  color: grey;
-}
-.user::before {
-  content: "Interviwee";
-  display: block;
-  max-width: 200px;
-  align-self: flex-start;
-  font-size: 14px;
-  color: blue;
-  margin: 1px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-#chatBotContainer{
-
-    display: none;
-}
-#microphoneButton1 {
-
-  display: none;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: 500;
-  color:grey;
-  margin:10px;
-}
 .assistant {
-  display: block;
-  max-width: 500px;
-
+  display: flex;
+  max-width: 40%;
+  padding: 12px 12px;
   align-self: flex-start;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 16px;
-  color: grey;
+  gap: 8px;
+  font-size: smaller;
+  border-radius: 16px 16px 4px 16px;
+  background: linear-gradient(to bottom, #faf9fa, #de97ca);
+  color:rgb(35, 31, 31);
+  margin: 5px 4px;
 }
 
-.assistant::before {
-  content: "Kora Agent";
-  display: block;
-  max-width: 200px;
-  align-self: flex-start;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 14px;
-  color: blue;
-  margin: 1px;
-}
 /* The switch - the box around the slider */
 .switch {
   position: relative;
@@ -489,8 +500,8 @@ ul {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+  -webkit-transition: .4s;
+  transition: .4s;
 }
 
 .slider:before {
@@ -501,19 +512,19 @@ ul {
   left: 4px;
   bottom: 3px;
   background-color: white;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+  -webkit-transition: .4s;
+  transition: .4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #d84a38;
 }
 
-input:focus + .slider {
+input:focus+.slider {
   box-shadow: 0 0 1px #d84a38;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   -webkit-transform: translateX(20px);
   -ms-transform: translateX(20px);
   transform: translateX(20px);
@@ -550,7 +561,7 @@ input:checked + .slider:before {
 }
 
 .form-container {
-    background-color: #ffffff;
+    background: linear-gradient(to bottom, #793e86, #2f2432); 
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -562,14 +573,14 @@ input:checked + .slider:before {
 }
 
 form h2 {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     text-align: center;
-    color: #333;
+    color:white;
 }
 
 .form-label {
     font-size: 14px;
-    color: #333;
+    color: white;
     margin-bottom: 8px;
     display: block;
 }
@@ -578,7 +589,7 @@ form h2 {
     width: 95%;
     padding: 10px;
     margin: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
@@ -588,7 +599,7 @@ form h2 {
 .form-button {
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
+    background-color: #16181a;
     color: #fff;
     border: none;
     border-radius: 4px;

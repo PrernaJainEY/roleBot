@@ -302,14 +302,14 @@ function setupWebRTC(iceServerUrl, iceServerUsername, iceServerCredential) {
         document.getElementById("stopSession").disabled = false;
         document.getElementById("form-container").style.display = "none";
         document.getElementById("chatBotContainer").style.display = "flex";
-        document.getElementById("remoteVideo").style.width = "90%";
+        // document.getElementById("remoteVideo").style.width = "90%";
 
         // document.getElementById('remoteVideo').style.backgroundImage="url('../tts UI/image/ey_background.png')";
         // document.getElementById('remoteVideo').style.backgroundSize="cover";
 
         document.getElementById("chatHistory").hidden = false;
         document.getElementById("microphoneButton1").style.display = "flex";
-        document.getElementById("continuousConversationDiv").hidden = false;
+        document.getElementById("continuousConversationDiv").hidden = true;
 
         if (document.getElementById("useLocalVideoForIdle").checked) {
           document.getElementById("localVideo").hidden = true;
@@ -324,10 +324,31 @@ function setupWebRTC(iceServerUrl, iceServerUsername, iceServerCredential) {
       };
 
       document.getElementById("remoteVideo").appendChild(videoElement);
+      let chatUserDiv = document.createElement("div");
+      chatUserDiv.classList.add("assistant");
+
+      let chatContainer = document.getElementById("chatHistory");
+      chatContainer.append(chatUserDiv);
+      chatUserDiv.innerText += ` Hello , welcome! It’s great to have you here today. 
+        1.In this interview, you’ll be interacting with our AI bot using voice input to evaluate how well the bot handles spoken queries.
+        2.On your screen, you should see a microphone button. It’s typically represented by an icon of a microphone. If you’re using microphone, the button should be located  at the bottom of the chat window .
+        3.To start speaking, click on the microphone button. Once you click it, you’ll be able to speak into your microphone. The button may change color or display a recording symbol to indicate that it’s active.
+        4.When you’re done speaking, click the microphone button again to stop recording. The AI bot will process your voice input and respond accordingly.
+        So Are you ready for the interview?`;
+      // chatHistoryTextArea.innerHTML += `${displaySentence}`
+      chatContainer.scrollTop = chatContainer.scrollHeight;
       speakFirst(
-        "Hello , welcome! It’s great to have you here today. Are you ready for the interview?",
-        2
+        `Hello , welcome! It’s great to have you here today. 
+        In this interview, you’ll be interacting with our AI bot using voice input to evaluate how well the bot handles spoken queries.
+        On your screen, you should see a microphone button. It’s typically represented by an icon of a microphone. If you’re using microphone, the button should be located  at the bottom of the chat window .
+        To start speaking, click on the microphone button. Once you click it, you’ll be able to speak into your microphone. The button may change color or display a recording symbol to indicate that it’s active.
+        When you’re done speaking, click the microphone button again to stop recording. The AI bot will process your voice input and respond accordingly.
+          So Are you ready for the interview?
+        `,
+        1
       );
+     
+      displaySentence = "";
     }
   };
 
@@ -450,8 +471,9 @@ ${experience} years
 A dynamic, results-driven environment that values innovation, teamwork, and a customer-centric approach.
 
 #Instructions:
+You are an AI assistant designed to conduct job interviews. Your goal is to ask one question at a time based on the user's responses. Avoid providing any feedback on whether the answers are correct or incorrect. Instead, focus on asking the next relevant question to proceed with the interview. Ensure the conversation flows naturally and guide the user through the interview process step-by-step.
 1. Begin the interview by briefly explaining the interview process in 2-3 lines.
-2. Ask a mix of technical questions, problem-solving scenarios, and experience-based questions that align with the job description and required skills.
+2. Ask a mix of technical questions, problem-solving scenarios, and experience-based questions that align with the job description and required skills one at a time.
 3. Dive deep into the candidate's knowledge of sales strategy development and execution, as this is crucial for the role.
 4. Include at least one scenario-based question related to managing a sales team or handling a challenging client situation.
 5. Assess the candidate's problem-solving approach and communication skills throughout the interview.
@@ -462,6 +484,7 @@ A dynamic, results-driven environment that values innovation, teamwork, and a cu
 
 #Remember to:
 - Keep track of time to ensure all key areas are covered within the 20-minute limit.
+- ask question one by one
 - Provide clear instructions for any technical questions or problem-solving scenarios.
 - Offer clarifications if the candidate seems unsure about a question.
 - Take note of the candidate's strengths and areas for improvement.
@@ -521,7 +544,7 @@ function htmlEncode(text) {
 }
 
 // Speak the given text
-function speak(text, endingSilenceMs = 2) {
+function speak(text, endingSilenceMs = 4) {
   if (isSpeaking) {
     spokenTextQueue.push(text);
     return;
@@ -529,7 +552,7 @@ function speak(text, endingSilenceMs = 2) {
 
   speakNext(text, endingSilenceMs);
 }
-function speakFirst(text, endingSilenceMs = 2) {
+function speakFirst(text, endingSilenceMs = 0) {
   if (isSpeaking) {
     spokenTextQueue.push(text);
     return;
@@ -552,7 +575,7 @@ function speakNext(text, endingSilenceMs = 0) {
   let ssml = `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='http://www.w3.org/2001/mstts' xml:lang='en-US'><voice name='${ttsVoice}'><mstts:ttsembedding speakerProfileId='${personalVoiceSpeakerProfileID}'><mstts:leadingsilence-exact value='0'/>${htmlEncode(
     text
   )}</mstts:ttsembedding></voice></speak>`;
-  if (endingSilenceMs > 0) {
+  if (endingSilenceMs > 4) {
     ssml = `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='http://www.w3.org/2001/mstts' xml:lang='en-US'><voice name='${ttsVoice}'><mstts:ttsembedding speakerProfileId='${personalVoiceSpeakerProfileID}'><mstts:leadingsilence-exact value='0'/>${htmlEncode(
       text
     )}<break time='${endingSilenceMs}ms' /></mstts:ttsembedding></voice></speak>`;
@@ -929,74 +952,69 @@ window.clearChatHistory = () => {
 window.microphone = () => {
   // Check if the browser supports WebRTC getUserMedia API
   // requestMicrophone();
-  if (document.getElementById("microphone").innerHTML === "Stop Microphone") {
+ 
+  document.getElementById('microphone').disabled = false
+  if (document.getElementById('microphone').src.includes('emojione-monotone_stop-button.svg')) {
     // Stop microphone
-    document.getElementById("microphone").disabled = true;
     speechRecognizer.stopContinuousRecognitionAsync(
-      () => {
-        document.getElementById("microphone").innerHTML = "Start Microphone";
-        document.getElementById("microphone").disabled = false;
-      },
-      (err) => {
-        console.log("Failed to stop continuous recognition:", err);
-        document.getElementById("microphone").disabled = false;
-      }
-    );
-
-    return;
-  }
-
-  if (document.getElementById("useLocalVideoForIdle").checked) {
-    if (!sessionActive) {
-      connectAvatar();
-    }
-
-    setTimeout(() => {
-      document.getElementById("audioPlayer").play();
-    }, 5000);
-  } else {
-    document.getElementById("audioPlayer").play();
-  }
-
-  document.getElementById("microphone").disabled = true;
-  speechRecognizer.recognized = async (s, e) => {
-    if (e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
-      let userQuery = e.result.text.trim();
-      if (userQuery === "") {
-        return;
-      }
-
-      // Auto stop microphone when a phrase is recognized, when it's not continuous conversation mode
-      if (!document.getElementById("continuousConversation").checked) {
-        document.getElementById("microphone").disabled = true;
-        speechRecognizer.stopContinuousRecognitionAsync(
-          () => {
-            document.getElementById("microphone").innerHTML =
-              "Start Microphone";
-            document.getElementById("microphone").disabled = false;
-          },
-          (err) => {
+        () => {
+            document.getElementById('microphone').src = './image/Frame 2610372.svg';
+            document.getElementById('microphone').disabled = false;
+        }, (err) => {
             console.log("Failed to stop continuous recognition:", err);
-            document.getElementById("microphone").disabled = false;
-          }
-        );
+            document.getElementById('microphone').disabled = false;
+        }
+    );
+    return;
+ }
+
+  if (document.getElementById('useLocalVideoForIdle').checked) {
+      if (!sessionActive) {
+          connectAvatar()
       }
 
-      handleUserQuery(userQuery);
-    }
-  };
+      setTimeout(() => {
+          document.getElementById('audioPlayer').play()
+      }, 5000)
+  } else {
+      document.getElementById('audioPlayer').play()
+  }
+
+
+ 
+  speechRecognizer.recognized = async (s, e) => {
+      if (e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
+          let userQuery = e.result.text.trim()
+          if (userQuery === '') {
+              return
+          }
+
+          // Auto stop microphone when a phrase is recognized, when it's not continuous conversation mode
+          if (!document.getElementById('continuousConversation').checked) {
+              document.getElementById('microphone').disabled = true
+              speechRecognizer.stopContinuousRecognitionAsync(
+                  () => {
+                      document.getElementById('microphone').src = './image/Frame 2610372.svg';
+                      document.getElementById('microphone').disabled = false
+                  }, (err) => {
+                      console.log("Failed to stop continuous recognition:", err)
+                      document.getElementById('microphone').disabled = false
+                  })
+          }
+
+          handleUserQuery(userQuery)
+      }
+  }
 
   speechRecognizer.startContinuousRecognitionAsync(
-    () => {
-      document.getElementById("microphone").innerHTML = "Stop Microphone";
-      document.getElementById("microphone").disabled = false;
-    },
-    (err) => {
-      console.log("Failed to start continuous recognition:", err);
-      document.getElementById("microphone").disabled = false;
-    }
-  );
-};
+      () => {
+          document.getElementById('microphone').src = './image/emojione-monotone_stop-button.svg';
+          document.getElementById('microphone').disabled = false
+      }, (err) => {
+          console.log("Failed to start continuous recognition:", err)
+          document.getElementById('microphone').disabled = false
+      })
+}
 
 window.updataEnableOyd = () => {
   if (document.getElementById("enableOyd").checked) {
@@ -1034,3 +1052,44 @@ window.updatePrivateEndpoint = () => {
     document.getElementById("showPrivateEndpointCheckBox").hidden = true;
   }
 };
+
+document.addEventListener('DOMContentLoaded', function() {
+  const downloadPdfButton = document.getElementById('downloadPdfButton');
+  downloadPdfButton.addEventListener('click', function() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+ 
+    // Get chat history
+    const chatHistory = document.getElementById('chatHistory');
+    const chatText = chatHistory.innerText || chatHistory.textContent;
+ 
+    // Set font size and style
+    doc.setFont('Arial', 'normal');
+    doc.setFontSize(12);
+ 
+    // Define margins
+    const margin = 10;
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+ 
+    // Initialize vertical position
+    let yPosition = margin;
+ 
+    // Split text into lines that fit within the page width
+    const lines = doc.splitTextToSize(chatText, pageWidth - 2 * margin);
+ 
+    // Add lines to PDF
+    lines.forEach(line => {
+      if (yPosition + 10 > pageHeight - margin) {
+        // Add a new page if the current one is full
+        doc.addPage();
+        yPosition = margin;
+      }
+      doc.text(line, margin, yPosition);
+      yPosition += 10; // Line height
+    });
+ 
+    // Save the PDF
+    doc.save('chat_history.pdf');
+  });
+});

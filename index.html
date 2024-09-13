@@ -14,8 +14,9 @@
 
 <body>
   <div class="navBar">
-    <img src="./image/SSS.png" class="logo" height="50px">
-    <text class="header">Kora AI Interview Agent</text>
+    <div>
+    <img src="./image/logo_image.png" class="logo" height="50px">
+    <text >Kora AI Interview Agent</text>
     <div class="buttonGroup">
       <!-- <button id="startSession" onclick="window.startSession()">Open Avatar Session</button> -->
       <button id="stopSession" onclick="window.stopSession()" disabled>End Interview</button>
@@ -130,7 +131,7 @@
  
   <button id="stopSpeaking" onclick="stopSpeaking()" disabled>Stop Speaking</button>
   <button id="clearChatHistory" onclick="window.clearChatHistory()">Clear Chat History</button> -->
-  <div class="chatBotContainer" id="chatBotContainer">
+  <div class="chatBotContainer hidden" id="chatBotContainer" >
     <div id="videoContainer" style="width: 700px;">
       <div id="overlayArea">
 
