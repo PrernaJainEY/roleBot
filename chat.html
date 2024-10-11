@@ -5,53 +5,122 @@
   <meta charset="UTF-8">
   <title>Kora AI Interview Agent</title>
   <link href="./css/styles.css" rel="stylesheet">
+  <!-- <script src="config.js"></script> -->
   <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
-  <script src="./js/chat.js">
- 
-  </script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
- ></script>
+  <script src="./js/chat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  <!-- <script>
+    // Function to update competencies based on selected designation
+    function updateCompetencies() {
+      const jobTitle = document.getElementById("job_title").value;
+      const competenciesDropdown = document.getElementById("competencies");
+
+      // Clear existing options
+      competenciesDropdown.innerHTML = "";
+
+      // Define competencies based on designation
+      let competencies = [];
+      if (jobTitle === "Sales manager") {
+        competencies = [
+          "Revenue Management",
+          "Dealers & Partner Management",
+          "Financial Acumen",
+          "Industry Knowledge & Product Offering"
+        ];
+      } else if (jobTitle === "Logistics") {
+        competencies = [
+          "Logistics Operational Excellence"
+        ];
+      }
+
+      // Populate the competencies dropdown
+      competencies.forEach(comp => {
+        const option = document.createElement("option");
+        option.value = comp;
+        option.textContent = comp;
+        competenciesDropdown.appendChild(option);
+      });
+
+      // Add a prompt option
+      const promptOption = document.createElement("option");
+      promptOption.value = "";
+      promptOption.textContent = "Select Competencies";
+      competenciesDropdown.insertBefore(promptOption, competenciesDropdown.firstChild);
+    }
+
+    // Add an event listener to update competencies on designation change
+    window.onload = function() {
+      const jobTitleDropdown = document.getElementById("job_title");
+      jobTitleDropdown.addEventListener("change", updateCompetencies);
+
+      // Call once to set the initial state
+      updateCompetencies();
+    };
+  </script> -->
 </head>
 
 <body>
   <div class="navBar">
     <div class="header">
-    <img src="./image/SSS.png" class="logo" >
-    <p class="namePurple">Kora.ai</p>
-    <sub class="nameWhite">Your Ai-Powered Growth Amplifier</sub>
-  </div>
+      <img src="./image/SSS.png" class="logo">
+      <p class="namePurple">Kora.ai</p>
+      <sub class="nameWhite">Your Ai-Powered Growth Amplifier</sub>
+    </div>
     <div class="buttonGroup">
-      <!-- <button id="startSession" onclick="window.startSession()">Open Avatar Session</button> -->
       <button id="stopSession" onclick="window.stopSession()" disabled>End Interview</button>
       <button id="downloadPdfButton">Download Chat</button>
+      <button id="rolePlayEvalButton">Evaluation Report</button>
     </div>
   </div>
+  
   <div class="form-container" id="form-container">
     <form class="form-skill" id="form-skill">
-      <h2>Job Interview Form</h2>
-      <label class="form-label" for="job_title">Job Title</label>
-      <select id="job_title" class="form-input">
-        <option value="Sales manager">Sales manager</option>
-        <option value="Data Scientist">Data Scientist</option>
-        <option value="Project Manager">Project Manager</option>
+      <h2>Roleplay Bot </h2>
+      
+      <label class="form-label" for="job_title">Designation</label>
+      <!-- <select id="job_title" class="form-input">
+        <option value="" disabled selected>Select Designation</option>
+        <option value="Sales_manager">Territory Sales Manager</option>
+        <option value="Logistics">Associate Officer Logistics</option>
+      </select> -->
+      <textarea id="job_title" class="form-input"></textarea>
+
+      <!-- <label class="form-label" for="competencies">Select Competencies</label>
+      <select id="competencies" class="form-input">
+        <option value="" disabled selected>Select Competencies</option> 
+        <option value="Revenue_Management">Revenue Management</option>
+        <option value="Dealers_&_Partner">Dealers & Partner Management</option>
+        <option value="Financial_Acumen">Financial Acumen</option>
+        <option value="Industry_Knowledge_&_Product_Offering">Industry Knowledge & Product Offering</option>
+        <option value="Logistics_Operational_Excellence">Logistics Operational Excellence</option>
+      </select> -->
+
+      <label class="form-label" for="key_focus_area">Key Focus Area</label>
+      <textarea id="key_focus_area" class="form-input"></textarea>
+
+      <label class="form-label" for="prompt">Prompt</label>
+      <textarea id="prompt" class="form-input"></textarea>
+
+      <label class="form-label" for="ai_persona">AI Persona</label>
+      <textarea id="ai_persona" class="form-input"></textarea>
+
+      <label class="form-label" for="employee_persona">Employee Persona</label>
+      <textarea id="employee_persona" class="form-input"></textarea>
+
+      <label class="form-label" for="industry_role">Industry Role</label>
+      <textarea id="industry_role" class="form-input"></textarea>
+
+      <label class="form-label" for="selected_lang">Select Language</label>
+      <select id="selected_lang" class="form-input">
+        <option value="English">English</option>
+        <option value="Hindi">Hindi</option>
       </select>
-
-      <label class="form-label" for="job_desc">Job Description</label>
-      <textarea id="job_desc" class="form-input"></textarea>
-
-      <label class="form-label" for="job_skills">Required Skills</label>
-      <textarea id="job_skills" class="form-input"></textarea>
-
-      <label class="form-label" for="focus_areas">Focus Areas</label>
-      <textarea id="focus_areas" class="form-input"></textarea>
-
-      <label class="form-label" for="experience">Experience (in years)</label>
-      <input class="form-input" type="number" id="experience">
 
       <button id="startSession" class="form-button" onclick="window.startSession()">Start Interview</button>
     </form>
   </div>
-
+  
   <div id="configuration" hidden>
     <h2 style="background-color: white; width: 300px;">Azure Speech Resource</h2>
     <label style="font-size: medium;" for="region">Region:</label>
@@ -238,6 +307,13 @@
   </div>
 
   <textarea id="userMessageBox" style="width: 960px; height: 40px" hidden></textarea><br />
+
+  <div id="progressBar" style="display:none;">
+    <div class="loader"></div> 
+  </div>
+
+  <!-- <script src="./js/pdfGenerator.js"></script> -->
+  
 
 </body>
 

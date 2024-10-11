@@ -6,6 +6,7 @@ var speechRecognizer;
 var avatarSynthesizer;
 var peerConnection;
 var messages = [];
+var evaluationmessages = [];
 var messageInitiated = false;
 var dataSources = [];
 var sentenceLevelPunctuations = [
@@ -41,6 +42,7 @@ var configuration = {
 // Connect to avatar service
 
 function connectAvatar() {
+  console.log("I am in Connect Avatar");
   const cogSvcRegion = configuration["cogSvcRegion"]; //document.getElementById('region').value
   const cogSvcSubKey = configuration["cogSvcSubKey"]; //document.getElementById('subscriptionKey').value
   if (cogSvcSubKey === "") {
@@ -161,7 +163,11 @@ function connectAvatar() {
 
   // Only initialize messages once
   if (!messageInitiated) {
-    initMessages();
+    try
+      {initMessages();
+      }catch(e){
+        console.log("Error in init msg",e);
+      }
     messageInitiated = true;
   }
 
@@ -308,7 +314,7 @@ function setupWebRTC(iceServerUrl, iceServerUsername, iceServerCredential) {
         // document.getElementById('remoteVideo').style.backgroundSize="cover";
 
         document.getElementById("chatHistory").hidden = false;
-        document.getElementById("microphoneButton1").style.display = "flex";
+        // document.getElementById("microphoneButton1").style.display = "flex";
         document.getElementById("continuousConversationDiv").hidden = true;
 
         if (document.getElementById("useLocalVideoForIdle").checked) {
@@ -426,70 +432,118 @@ function requestMicrophone() {
     });
 }
 
+// const currentUrl = window.location.href;
+// console.log(currentUrl); // This will log the current URL
+
+// // Define your Excel files
+// const excelFiles = ['CompetencySample_JKLC_test.xlsx', 'RoletoCompJKLC_test.xlsx', 'role_based_admin_input_test.xlsx']; // Add more as needed
+
+// // Function to fetch Excel file
+// async function fetchExcelFile(file) {
+//   try {
+//       const fileUrl = `${currentUrl}js/master/${file}`;
+//       const response = await fetch(fileUrl);
+      
+//       if (!response.ok) {
+//           throw new Error('Network response was not ok');
+//       }
+
+//       const arrayBuffer = await response.arrayBuffer();
+//       const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+//       const firstSheetName = workbook.SheetNames[0];
+//       const worksheet = workbook.Sheets[firstSheetName];
+//       const json = XLSX.utils.sheet_to_json(worksheet);
+
+//       console.log(JSON.stringify(json, null, 2));
+//   } catch (error) {
+//       console.error('Error fetching the Excel file:', error);
+//   }
+// }
+
+// // Loop through Excel files and fetch each one
+// for (const file of excelFiles) {
+//    fetchExcelFile(file);
+// }
+
 function initMessages() {
-  const job_title =
-    document.getElementById("job_title").value || "Sales Manager";
-  const job_desc =
-    document.getElementById("job_desc").value ||
-    "A Sales Manager responsible for leading and managing the sales team, developing sales strategies, identifying new business opportunities, and driving revenue growth. The role involves collaborating with cross-functional teams, ensuring customer satisfaction, and achieving sales targets.";
-  const requiredSkills =
-    document.getElementById("job_skills").value ||
-    `
-- Strong leadership and team management abilities
-- Excellent communication and negotiation skills
-- Proven experience in developing and executing successful sales strategies
-- In-depth knowledge of sales metrics, analytics, and forecasting
-- Proficiency in CRM software and sales management tools
-- Experience in building and maintaining client relationships
-    `;
-  const focusSkills =
-    document.getElementById("focus_areas").value ||
-    `- Leadership and team management
-- Sales strategy development and execution
-- Performance analytics and forecasting
-- Customer relationship management
-- Negotiation and communication`;
-  const experience = document.getElementById("experience").value || 5;
-  messages = [];
+const text_area_job=""
+  const key_focus_area=
+    document.getElementById("key_focus_area").value ||
+     `Sales Strategy: Develop and implement territory-specific sales strategies
+Customer Relations: Build and maintain strong relationships with existing and new customers.
+Sales Execution: Conduct presentations, negotiate deals, and close sales.
+Territory Management: Plan coverage, segment customers, and track performance.
+Team Collaboration: Coordinate with internal teams and support junior members.
+Market Intelligence: Monitor competitors and gather market feedback.
+Administrative Duties: Maintain records and ensure policy compliance.`;
+const prompt =
+document.getElementById("prompt").value || 
+`As a new Territory Sales Manager, what will you do differently that your predecessors couldn't achieve? 
+•  You've appointed a new dealer in my area, my business is at risk! How do you plan to address this issue? 
+•  What's your strategy to tackle the undercutting problem in the market? How will you ensure we don't all go bankrupt due to this practice? 
+•  My payments have been pending for 6 months, and my cash flow is breaking down. How will you resolve this situation? 
+•  These substandard gifts for the contractor scheme are not appreciated, it's reducing our reputation. How will you address this feedback? 
+•  I can't understand this ledger. Are you trying to fool us? How can you make this more transparent? 
+•  We always face problems with GST filing due to late credit notes. How will you solve this recurring issue? 
+•  These discount calculations seem incorrect, we're incurring losses. How will you make these calculations more transparent and understandable? 
+•  We used to handle everything in cash before, this new FOR delivery system is causing problems. How do you justify these changes? 
+•  You people only know how to sell, there's no marketing support! How do you plan to improve marketing support? 
+•  Old branding is still displayed at my location. Are we not important enough? What's your plan to update the branding? 
+•  In every truck, at least two cement bags are damaged. Who will bear this loss? 
+•  The margin is so low that damages alone wipe out all our profit. How will you address this concern? 
+•  Technical services don't provide any solutions. What answer should we give to customers? What action plan do you have? 
+•  You've reduced the rates, how will we survive now? How can you reassure us about our profitability? 
+•  You're supplying directly to retailers, what's the need for us then? How will you handle this situation? 
+•  You only visit once in two months, whom should we talk to about our problems? How will you bridge this communication gap? 
+•  You provide credit notes with GST, but we have to take input. What's this complication? Can you explain this simply? 
+•  I've been working exclusively for so many years, but there's no special discount for me. How will you reward loyalty? 
+•  The sales promoter doesn't do anything but eats into the commission for my hard work! How will you change this perception?`;
+  const ai_persona =
+    document.getElementById("ai_persona").value ||
+    `Amit Shah (Cement sales Dealer) : 45-year-old owner of Patel Building Materials in Ahmedabad, Gujarat, with 20 years of experience and ₹15-20 crore annual turnover. Sells various construction materials, primarily "IndiaStrong Cement", aiming to increase turnover to ₹25 crore and improve profit margins from 8% to 12%. Strengths: strong local relationships, reliable service, deep product knowledge; Challenges: cash flow management, intense competition, fluctuating cement prices. Seeks consistent product quality, competitive pricing, and marketing support from cement companies; prefers direct communication and face-to-face meetings for important discussions. Tech-savvy with basic software use, but cautious about advanced digital tools; actively involved in daily operations from site visits to inventory management and client meetings. Decision factors: profit margin, payment terms, brand reputation, product quality, and support from cement companies.`;
+  const employee_persona =
+    document.getElementById("employee_persona").value ||
+    `Rajesh Kumar, an experienced Territory Sales Manager in Ahmedabad, runs Kumar Building Supplies with an annual turnover of ₹15-20 crore and aims to grow it to ₹25 crore while improving profit margins from 8% to 12%. He excels in maintaining local relationships and has deep product knowledge. Challenges include cash flow management and intense competition. Rajesh values consistent quality, competitive pricing, and strong marketing support. He prefers direct communication and is hands-on in daily operations.`;
+const industry_role =
+    document.getElementById("industry_role").value ||
+    `Territory Sales Manager`;
+const selected_lang =
+    document.getElementById("selected_lang").value ||
+    `English`;
 
   if (dataSources.length === 0) {
-   
+   let role_play= Role_Play(ai_persona,employee_persona,industry_role,text_area_job,prompt)
     let systemPrompt = 
-    `You are an AI Technical Recruiter and Competency Expert with 25 years of experience conducting technical interviews. Your task is to conduct a thorough and engaging 20-minute technical interview for the position of ${job_title}
-
-#Job Description:
-${job_desc}
-#Required Skills:
-${requiredSkills}
-#Key Focus Areas:
-${focusSkills}
-
-#Experience Level: 
-${experience} years
-
-#Company Culture: 
-A dynamic, results-driven environment that values innovation, teamwork, and a customer-centric approach.
-
-#Instructions:
-You are an AI assistant designed to conduct job interviews. Your goal is to ask one question at a time based on the user's responses. Avoid providing any feedback on whether the answers are correct or incorrect. Instead, focus on asking the next relevant question to proceed with the interview. Ensure the conversation flows naturally and guide the user through the interview process step-by-step.
-1. Begin the interview by briefly explaining the interview process in 2-3 lines.
-2. Ask a mix of technical questions, problem-solving scenarios, and experience-based questions that align with the job description and required skills one at a time.
-3. Dive deep into the candidate's knowledge of sales strategy development and execution, as this is crucial for the role.
-4. Include at least one scenario-based question related to managing a sales team or handling a challenging client situation.
-5. Assess the candidate's problem-solving approach and communication skills throughout the interview.
-6. Allow time for the candidate to ask questions about the role or company.
-7. Adapt your questions based on the candidate's responses to ensure a thorough evaluation of their skills and experience.
-8. Maintain a professional yet friendly tone, reflecting the company culture described above.
-9. End the interview by thanking the candidate and explaining the next steps in the process.
-
-#Remember to:
-- Keep track of time to ensure all key areas are covered within the 20-minute limit.
-- ask question one by one
-- Provide clear instructions for any technical questions or problem-solving scenarios.
-- Offer clarifications if the candidate seems unsure about a question.
-- Take note of the candidate's strengths and areas for improvement.
-- Evaluate both technical skills and soft skills such as communication and problem-solving approach.
-After the interview, provide a brief assessment of the candidates performance, highlighting their strengths, areas for improvement, and overall fit for the role.`;
+    `You are an {ai_persona} tasked with conducting a natural, engaging and adaptive Role Play exercise. Understand the inputs from Roles and Context:
+    - Role A (AI Bot): ${ai_persona}
+    - Role B (Employee): ${employee_persona}
+    - Industry/Sector: ${industry_role}
+    - Job Description for Role B: ${text_area_job}
+    - Language : ${selected_lang}
+ 
+    Please follow the detailed instructions while having this conversation.
+    1. Ask only **one clear and concise question** at a time, ensuring it is clear and related to the context provided.
+    2. Adopt the persona of Role A, including their communication style, expertise, and industry knowledge. Integrate the persona and role context seamlessly into the conversation.
+    3. Before starting the conversation, extract the relevant context and information from ${role_play} for conversation scenarios. This should guide the direction and focus of your interaction.
+    4. Ensure the conversation is dynamic, with follow-up questions and discussions based on the employee's responses.
+    5. Create and present realistic scenarios, complex conditions, and adaptive conversations based on the given context, roles, and job description.
+    6. Ask probing questions and respond to the employee's (Role B) answers in a way that allows them to demonstrate their skills and knowledge naturally.
+    7. Don't skip questions or topics; address each point thoroughly.
+    8. As the conversation progresses, introduce new information, challenges, or scenarios to make the discussion more dynamic and realistic.
+    9. Maintain a balanced approach in your responses. While acknowledging good ideas, also express concerns, challenges, or conflicting objectives where appropriate.
+    10. Ensure the conversation covers most of the expected role responsibilities as outlined in the job description.
+    11. Conduct a comprehensive conversation that thoroughly explores the main objective and related aspects.
+    12. Adapt your responses and the conversation's difficulty based on the employee's answers to create a dynamic and challenging interaction.
+ 
+    **Remember to maintain a natural, human-like conversation throughout the interaction while providing a comprehensive and engaging discussion experience, and ensure you follow the conversation in ${selected_lang} throughout the interaction.**
+ 
+    Note:
+    - Strictly follow: Once you receive five answers or if the conversation is closed,say 'Thank you for the insightful discussion!' and end the conversation.
+    - If the conversation is not yet closed and five responses have been received, respond with the closing message and end the interaction.
+    - If an out-of-context question is detected, respond with:
+        "Let's focus on the case study to ensure an accurate assessment of your proficiency in {competency_data_columns['Competency']}. Please refer to the scenario provided."
+    - **If the user repeats a question or pastes the question back, respond with:**
+        "Please provide your response to the question. Let's focus on the case study and the specific scenario provided.`;
 
     let systemMessage = {
       role: "system",
@@ -640,6 +694,7 @@ function handleUserQuery(userQuery) {
   };
 
   messages.push(chatMessage);
+  evaluationmessages.push(chatMessage);
   //let chatHistoryTextArea = document.getElementById('chatHistory')
   let chatUserDiv = document.createElement("div");
   chatUserDiv.classList.add("user");
@@ -672,6 +727,7 @@ function handleUserQuery(userQuery) {
     "{AOAIEndpoint}/openai/deployments/{AOAIDeployment}/chat/completions?api-version=2023-06-01-preview"
       .replace("{AOAIEndpoint}", azureOpenAIEndpoint)
       .replace("{AOAIDeployment}", azureOpenAIDeploymentName);
+  console.log("messages", messages)
   let body = JSON.stringify({
     messages: messages,
     stream: true,
@@ -913,6 +969,7 @@ window.onload = () => {
 };
 
 window.startSession = () => {
+  console.log("Session Starteddddddddddddddd");
   if (document.getElementById("useLocalVideoForIdle").checked) {
     document.getElementById("startSession").disabled = true;
     document.getElementById("configuration").hidden = true;
@@ -1093,3 +1150,389 @@ document.addEventListener('DOMContentLoaded', function() {
     doc.save('chat_history.pdf');
   });
 });
+
+async function Role_Play(ai_persona,employee_persona,industry,text_area_job,text_area_content){
+    // Define the prompt with clear headings for each task
+    prompt_role=`
+
+    # You are an  industry expert ${industry} with 25 years of experience, tasked with generating relevant context and scenarios for a role-play conversation, focusing on conflicting objectives and competency assessment.
+    # Your output will be processed by another LLM to conduct the actual conversation. Please follow these instructions carefully:
+
+    ## Information Extraction:
+    1. Analyze the ${text_area_content} provided by the user.
+    2. Extract key details about:
+    - Role A:${ai_persona} 
+    - Role B (Employee to be assessed): ${employee_persona}
+    
+    3. Identify key responsibilities for Role B and the main competencies to be assessed (e.g., relationship management, negotiation skills, communication, problem-solving, analytical thinking).
+
+    ## Context Creation:
+    1. Develop a clear, concise background for the role-play conversation.
+    2. Include the objectives of both roles, ensuring they have some conflicting elements.
+
+    ## Scenario Generation:
+    1. Create 3-5 specific scenarios that highlight conflicting objectives between Role A and Role B.
+    2. Ensure scenarios are realistic, relevant to the roles and industry, and designed to assess specific competencies.
+    3. Include a mix of routine situations and more complex or challenging scenarios.
+
+    ## Conversation Starters:
+    1. Provide 2-3 potential conversation starters for the AI Bot (Role A) to initiate the role-play.
+    2. Ensure these starters are natural and aligned with the given context and scenarios.
+
+    ## Key Discussion Points:
+    1. List 5-7 key topics or responsibilities that should be covered during the conversation.
+    2. Link each point to specific competencies to be assessed.
+
+    ## Challenging Elements:
+    1. Suggest 2-3 complex problems or decisions that could be introduced during the role-play.
+    2. Ensure these challenges involve conflicting objectives and assess multiple competencies.
+
+    ## Output Format:
+    1. Context Summary (2-3 sentences, including role objectives)
+    2. Scenarios (3-5 bullet points, each including conflicting objectives and competencies to assess)
+    3. Conversation Starters (2-3 examples)
+    4. Key Discussion Points (5-7 bullet points, each with associated competencies)
+    5. Challenging Elements (2-3 bullet points, each with conflicting objectives and competencies to assess)
+
+    ## Remember:
+    - Maintain objectivity and avoid personal biases.
+    - Do not add information beyond what is provided in the {text_area_content}.
+    - Ensure all generated content is directly relevant to the roles, industry, and competencies specified.
+    - If any information is ambiguous or unclear, note this in your response.
+    
+    Your goal is to provide a comprehensive framework that enables a realistic and effective role-play conversation for assessing an employee's capabilities, with a focus on handling conflicting objectives and demonstrating key competencies.
+
+            `
+    
+    // // Send the prompt to the model
+    // response = client_4o.chat.completions.create(
+    //     model=gpt_model_4o,
+    //     messages=[{"role": "system", "content": prompt_role}],
+    //     temperature=0.4
+    // )
+    // return response.choices[0].message.content
+  const azureOpenAIEndpoint = "https://swcdaoipocaoa15.openai.azure.com"; 
+  const azureOpenAIApiKey = "faaf969f35384d0b82ebe9405dc914da"; 
+  const azureOpenAIDeploymentName = "gpt_4_32k";
+
+  let url =
+    "{AOAIEndpoint}/openai/deployments/{AOAIDeployment}/chat/completions?api-version=2023-06-01-preview"
+      .replace("{AOAIEndpoint}", azureOpenAIEndpoint)
+      .replace("{AOAIDeployment}", azureOpenAIDeploymentName);
+
+  let mes = JSON.stringify({
+    messages: [{ "role": "system", "content": prompt_role }],
+    stream: false,
+  });
+
+  try {
+    // First API request to get the role play prompt
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "api-key": azureOpenAIApiKey,
+        "Content-Type": "application/json",
+      },
+      body: mes,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Chat API response status: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log("Response data Roleplayyyyyyyyyyyyyyyy:", data.choices[0].message.content);
+
+    return data.choices[0].message.content;
+  } catch (error) {
+    console.error("Error fetching Roleplay:", error);
+    throw error;
+  }
+  }
+async function fetchEvaluation(aiPersona, employeePersona, industryRole, prompt_role, chatText) {
+  const azureOpenAIEndpoint = "https://swcdaoipocaoa15.openai.azure.com"; 
+  const azureOpenAIApiKey = "faaf969f35384d0b82ebe9405dc914da"; 
+  const azureOpenAIDeploymentName = "gpt_4_32k";
+  const progressBar = document.getElementById('progressBar');
+  progressBar.style.display = 'block';
+
+  let url =
+    "{AOAIEndpoint}/openai/deployments/{AOAIDeployment}/chat/completions?api-version=2023-06-01-preview"
+      .replace("{AOAIEndpoint}", azureOpenAIEndpoint)
+      .replace("{AOAIDeployment}", azureOpenAIDeploymentName);
+
+  let mes = JSON.stringify({
+    messages: [{ "role": "system", "content": prompt_role }],
+    stream: false,
+  });
+
+  try {
+    // First API request to get the role play prompt
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "api-key": azureOpenAIApiKey,
+        "Content-Type": "application/json",
+      },
+      body: mes,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Chat API response status: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log("Response data:", data);
+
+    const role_play_prompt = data.choices[0].message.content;
+    console.log("Response data:", data);
+    
+    // Now use the role_play_prompt to generate the evaluation report
+    const prompt_role_eval = `
+        # Deep Industry Expertise Assessment
+        ## Context
+        - **Role A**: An AI BOT representing ${aiPersona}
+        - **Role B**: An employee being assessed, representing ${employeePersona}
+        - **Industry/Sector**: ${industryRole}
+        - **Context**: ${role_play_prompt}
+
+        ## Conversation Transcript
+        ${chatText}
+
+        ## Assessment
+
+        ### Factor Scores
+        1. **Technical Expertise**: [score]
+        - Justification: [justification]
+        
+        2. **Communication and Interpersonal Skills**: [score]
+        - Justification: [justification]
+        
+        3. **Problem-Solving and Decision Making**: [score]
+        - Justification: [justification]
+        
+        4. **Role-Specific Responsibility Execution**: [score]
+        - Justification: [justification]
+        
+        5. **Adaptability and Growth Potential**: [score]
+        - Justification: [justification]
+
+        ### Overall Score
+        - **Weighted Average Score**: [overall_score] (out of 5)
+
+        ### Top 2 Strengths
+        1. **Strength 1**: [specific example from conversation]
+        - Explanation: [2-3 sentences]
+        
+        2. **Strength 2**: [specific example from conversation]
+        - Explanation: [2-3 sentences]
+
+        ### Top 2 Areas for Improvement
+        1. **Area for Improvement 1**: [specific example from conversation]
+        - Suggestions: [2-3 sentences]
+        
+        2. **Area for Improvement 2**: [specific example from conversation]
+        - Suggestions: [2-3 sentences]
+
+        ### Key Observation
+        - **Notable Aspect**: [one sentence summary of the most notable aspect of the employee's performance]
+
+        ### Role Readiness Assessment
+        - **Readiness**: [Not Ready / Needs Significant Development / Approaching Readiness / Ready / Exceeds Readiness]
+
+        ### Evaluation Rationale
+        - **Reasoning**: [3-4 sentences explaining the scores, strengths, areas for improvement, and role readiness assessment]
+
+        ### AI-Generated Content Flag
+        - **Instances of Potential AI-Generated Content**: 
+        - **Example 1**: [specific example and reasoning]
+        - **Example 2**: [specific example and reasoning]
+
+        ## Additional Guidelines
+        - Assessment is based strictly on observable behaviors and responses in the transcript.
+        - Scores and evaluations are quantifiable, avoiding subjective language.
+        - Complexity of scenarios and employee’s handling are considered.
+        - Feedback is specific, actionable, and aligned with role performance.
+        - AI-generated content flagged based on inconsistencies, verbosity, and lack of human conversational flow.
+
+        ## Conclusion
+        The assessment is thorough, objective, and based solely on the conversation transcript and provided context, ensuring a fair and consistent evaluation aligned with industry standards.
+    `;
+
+    let prompt_role_eval_body = JSON.stringify({
+      messages: [{ "role": "system", "content": prompt_role_eval
+ }],
+      stream: false,
+    });
+
+    // Second API request to get the evaluation report
+    const evalResponse = await fetch(url, {
+      method: "POST",
+      headers: {
+        "api-key": azureOpenAIApiKey,
+        "Content-Type": "application/json",
+      },
+      body: prompt_role_eval_body,
+    });
+
+    if (!evalResponse.ok) {
+      throw new Error(`Chat API response status: ${evalResponse.status} ${evalResponse.statusText}`);
+    }
+
+    const prompt_role_eval_data = await evalResponse.json();
+    console.log("Evaluation response data:", prompt_role_eval_data);
+
+    // Return the generated evaluation report
+    return prompt_role_eval_data.choices[0].message.content;
+
+  } catch (error) {
+    console.error("Error fetching evaluation:", error);
+    throw error;
+  }
+  finally {
+    // Hide the progress bar after PDF generation
+    const progressBar = document.getElementById('progressBar');
+    progressBar.style.display = 'none';
+  }
+}
+
+
+// Function to generate PDF from evaluation data
+function generatePDF(content) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Set font size and style
+  doc.setFont('Arial', 'normal');
+  doc.setFontSize(12);
+
+  // Define margins
+  const margin = 10;
+  const pageWidth = doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.height;
+
+  // Initialize vertical position
+  let yPosition = margin;
+
+  // Split content into lines that fit within the page width
+  const lines = doc.splitTextToSize(content, pageWidth - 2 * margin);
+
+  // Add lines to PDF
+  lines.forEach(line => {
+    if (yPosition + 10 > pageHeight - margin) {
+      // Add a new page if the current one is full
+      doc.addPage();
+      yPosition = margin;
+    }
+    doc.text(line, margin, yPosition);
+    yPosition += 10; // Line height
+  });
+
+  const pdfData = doc.output('datauristring');
+  
+  // Store the base64 string in localStorage
+  localStorage.setItem('pdfData', pdfData);
+  window.location.href = 'summary.html';
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  // Event listener for Role Play Evaluation button
+  document.getElementById('rolePlayEvalButton').addEventListener('click', async function() {
+    try {
+      // Collect the data from the form
+  const aiPersona =
+    document.getElementById("ai_persona").value ||
+    `Amit Shah (Cement sales Dealer) : 45-year-old owner of Patel Building Materials in Ahmedabad, Gujarat, with 20 years of experience and ₹15-20 crore annual turnover. Sells various construction materials, primarily "IndiaStrong Cement", aiming to increase turnover to ₹25 crore and improve profit margins from 8% to 12%. Strengths: strong local relationships, reliable service, deep product knowledge; Challenges: cash flow management, intense competition, fluctuating cement prices. Seeks consistent product quality, competitive pricing, and marketing support from cement companies; prefers direct communication and face-to-face meetings for important discussions. Tech-savvy with basic software use, but cautious about advanced digital tools; actively involved in daily operations from site visits to inventory management and client meetings. Decision factors: profit margin, payment terms, brand reputation, product quality, and support from cement companies.`;
+  const employeePersona =
+    document.getElementById("employee_persona").value ||
+    `Rajesh Kumar, an experienced Territory Sales Manager in Ahmedabad, runs Kumar Building Supplies with an annual turnover of ₹15-20 crore and aims to grow it to ₹25 crore while improving profit margins from 8% to 12%. He excels in maintaining local relationships and has deep product knowledge. Challenges include cash flow management and intense competition. Rajesh values consistent quality, competitive pricing, and strong marketing support. He prefers direct communication and is hands-on in daily operations.`;
+const industryRole =
+    document.getElementById("industry_role").value ||
+    `Territory Sales Manager`;
+
+      // Ensure there's valid content in chat history
+      const chatHistory = document.getElementById('chatHistory');
+      const chatText = chatHistory.innerText || chatHistory.textContent;
+
+      if (!chatText) {
+        console.error("No conversation found in chat history.");
+        return;
+      }
+
+      console.log("Chat Text:", chatText);
+
+      prompt_role=`
+
+      # You are an  industry expert ${industryRole} with 25 years of experience, tasked with generating relevant context and scenarios for a role-play conversation, focusing on conflicting objectives and competency assessment.
+      # Your output will be processed by another LLM to conduct the actual conversation. Please follow these instructions carefully:
+  
+      ## Information Extraction:
+      1. Analyze the ${chatText} provided by the user and the bot.
+      2. Extract key details about:
+      - Role A:${aiPersona} 
+      - Role B (Employee to be assessed): ${employeePersona}
+      
+      3. Identify key responsibilities for Role B and the main competencies to be assessed (e.g., relationship management, negotiation skills, communication, problem-solving, analytical thinking).
+  
+      ## Context Creation:
+      1. Develop a clear, concise background for the role-play conversation.
+      2. Include the objectives of both roles, ensuring they have some conflicting elements.
+  
+      ## Scenario Generation:
+      1. Create 3-5 specific scenarios that highlight conflicting objectives between Role A and Role B.
+      2. Ensure scenarios are realistic, relevant to the roles and industry, and designed to assess specific competencies.
+      3. Include a mix of routine situations and more complex or challenging scenarios.
+  
+      ## Conversation Starters:
+      1. Provide 2-3 potential conversation starters for the AI Bot (Role A) to initiate the role-play.
+      2. Ensure these starters are natural and aligned with the given context and scenarios.
+  
+      ## Key Discussion Points:
+      1. List 5-7 key topics or responsibilities that should be covered during the conversation.
+      2. Link each point to specific competencies to be assessed.
+  
+      ## Challenging Elements:
+      1. Suggest 2-3 complex problems or decisions that could be introduced during the role-play.
+      2. Ensure these challenges involve conflicting objectives and assess multiple competencies.
+  
+      ## Output Format:
+      1. Context Summary (2-3 sentences, including role objectives)
+      2. Scenarios (3-5 bullet points, each including conflicting objectives and competencies to assess)
+      3. Conversation Starters (2-3 examples)
+      4. Key Discussion Points (5-7 bullet points, each with associated competencies)
+      5. Challenging Elements (2-3 bullet points, each with conflicting objectives and competencies to assess)
+  
+      ## Remember:
+      - Maintain objectivity and avoid personal biases.
+      - Do not add information beyond what is provided within the context ${chatText}.
+      - Ensure all generated content is directly relevant to the roles, industry, and competencies specified.
+      - If any information is ambiguous or unclear, note this in your response.
+      
+      Your goal is to provide a comprehensive framework that enables a realistic and effective role-play conversation for assessing an employee's capabilities, with a focus on handling conflicting objectives and demonstrating key competencies.`
+
+      // Send the evaluation prompt to the backend (or API)
+      const evaluationContent = await fetchEvaluation(aiPersona, employeePersona, industryRole, prompt_role, chatText);
+      
+      // Check if the evaluation content was generated successfully
+      if (!evaluationContent) {
+        throw new Error("Failed to fetch the evaluation content");
+      }
+      console.log("evaluationContent", evaluationContent)
+
+      // Generate the PDF report based on the content
+      generatePDF(evaluationContent);
+
+    } catch (error) {
+      console.error("Failed to generate evaluation report:", error);
+    }
+  });
+});
+
+
+
+
+
+
+
+
+

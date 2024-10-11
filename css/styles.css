@@ -611,3 +611,46 @@ form h2 {
 .form-button:hover {
     background-color: #0056b3;
 }
+
+/* .parentProgressbar{
+  width:100vw;
+  height:100vh;
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #00000030;
+} */
+
+/* Loader styles */
+.loader {
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #3498db;
+  width: 25px;
+  height: 25px;
+  animation: spin 2s linear infinite;
+  margin: 0 auto;
+  display: block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#progressBar {
+  text-align: center;
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+
