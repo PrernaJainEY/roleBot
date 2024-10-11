@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>PDF Evaluation Report</title>
+  <link href="./css/styles.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="navBar">
+    <div class="header">
+      <img src="./image/SSS.png" class="logo">
+      <p class="namePurple">Kora.ai</p>
+      <sub class="nameWhite">Your AI-Powered Growth Amplifier</sub>
+    </div>
+    <div class="buttonGroup">
+      <a id="downloadPdfLink" href="#" download="evaluation_report.pdf">
+        <button>Download PDF</button>
+      </a>
+    </div>
+  </div>
+
+  <div id="pdfContainer">
+    <iframe id="pdfIframe" style="width: 100vw; height: 600px; border: none;"></iframe>
+
+  </div>
+  <script>
+    // Get the base64 string from localStorage
+    const pdfData = localStorage.getItem('pdfData');
+    
+    // Check if pdfData exists
+    if (pdfData) {
+      // Properly format the base64 string as a data URL
+      const dataUrl = `data:application/pdf;base64,${pdfData.split(',')[1] || pdfData}`;
+      
+      // Set the src of the iframe to the data URL
+      document.getElementById('pdfIframe').src = dataUrl;
+    } else {
+      document.body.innerHTML = "No PDF data found.";
+    }
+  </script>
+</body>
+
+</html>
