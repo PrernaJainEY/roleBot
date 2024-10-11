@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Instructions to run Microsoft Azure TTS Talking Avatar sample code
 
 ## Basic Sample
@@ -77,3 +78,6 @@ This sample demonstrates the chat scenario, with integration of Azure speech-to-
 * If you want to clear the chat history and start a new round of chat, you can click `Clear Chat History` button. And if you want to stop the avatar service, please click `Close Video Connection` button to close the connection with avatar service.
 
 * If you want to type your query message instead of speaking, you can check the `Type Message` checkbox, and then type your query message in the text box showing up below the checkbox.
+=======
+# roleBot
+>>>>>>> be96a3b8f930628c4826c6609a1dc77b92a0528a
